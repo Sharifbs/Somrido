@@ -8,7 +8,7 @@
     <!-- 📱 PWA Support Tags -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#06b6d4">
-    <link rel="apple-touch-icon" href="image/image01.png">
+    <link rel="apple-touch-icon" href="./image/image01.png">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -148,7 +148,7 @@
 
     <div id="loginSuccessToast" class="d-none-toast">
         <i class="fa-solid fa-circle-check text-white fs-5"></i>
-        <span id="toastMessage">👋 স্বাগতম অ্যাডমিন! আপনার লগইন সফল হয়েছে এবং আপনি বর্তমানে হোমপেজে আছেন।</span>
+        <span id="toastMessage">👋 স্বাগতম এডমিন! আপনার লগইন সফল হয়েছে এবং আপনি বর্তমানে হোমপেজে আছেন।</span>
     </div>
 
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow">
@@ -230,7 +230,7 @@
             <div class="col-12 col-md-4">
                 <div class="premium-card">
                     <h5 class="fw-bold text-info" id="w-t3">সামাজিক সহয়তা প্রদান</h5>
-                    <p class="text-muted small" id="w-d3">社会的 পিছিয়ে পড়া মানুষের উন্নয়ন ও আর্থসামাজিক প্রজেক্টে অর্থায়ন করা।</p>
+                    <p class="text-muted small" id="w-d3">সমাজের পিছিয়ে পড়া মানুষের উন্নয়ন ও আর্থসামাজিক প্রজেক্টে অর্থায়ন করা।</p>
                 </div>
             </div>
         </div>
@@ -240,13 +240,13 @@
         <h2 class="section-title" id="gallery-title">ফটোগ্রাফি ও ইভেন্ট গ্যালারি</h2>
         <div id="dynamic-gallery-row" class="row g-3">
             <div class="col-12 col-sm-6 col-md-4">
-                <img src="image/image01.png" onerror="this.onerror=null; this.src='../image/image01.png';" class="gallery-img" alt="Somrido Photo 01">
+                <img src="./image/image01.png" class="gallery-img" alt="Somrido Photo 01">
             </div>
             <div class="col-12 col-sm-6 col-md-4">
-                <img src="image/image02.png" onerror="this.onerror=null; this.src='../image/image02.png';" class="gallery-img" alt="Somrido Photo 02">
+                <img src="./image/image02.png" class="gallery-img" alt="Somrido Photo 02">
             </div>
             <div class="col-12 col-sm-6 col-md-4">
-                <img src="image/image03.png" onerror="this.onerror=null; this.src='../image/image03.png';" class="gallery-img" alt="Somrido Photo 03">
+                <img src="./image/image03.png" class="gallery-img" alt="Somrido Photo 03">
             </div>
         </div>
     </section>
@@ -284,8 +284,8 @@
                 <hr style="border-color: #334155;">
                 <form id="portalLoginForm">
                     <div class="mb-3">
-                        <label class="form-label text-secondary small" id="m-user-lbl">ইউজার আইডি / অ্যাডমিন নাম</label>
-                        <input type="text" id="loginUsername" class="form-control" placeholder="उदा: S-01 অথবা admin" required>
+                        <label class="form-label text-secondary small" id="m-user-lbl">ইউজার আইডি / এডমিন নাম</label>
+                        <input type="text" id="loginUsername" class="form-control" placeholder="যেমন: S001 অথবা admin" required>
                     </div>
                     <div class="mb-4">
                         <label class="form-label text-secondary small" id="m-pass-lbl">গোপন পাসওয়ার্ড</label>
@@ -301,11 +301,19 @@
     <footer class="footer text-center">
         <div class="container">
             <p class="mb-1 text-secondary small">&copy; 2026 Somrido Portal. All Rights Reserved.</p>
-            <p class="mb-0 text-muted small" style="letter-spacing: 1px;">Powered by <span class="text-info fw-bold">Somrio</span></p>
+            <p class="mb-0 text-muted small" style="letter-spacing: 1px;">Powered by <span class="text-info fw-bold">Somrido</span></p>
         </div>
     </footer>
 
+    <!-- Supabase JS Client CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script>
+        // Supabase Configurations
+        const SUPABASE_URL = 'https://iO-6iLqARdcS-KD48XehzA_RfVk_Kie.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_iO-6iLqARdcS-KD48XehzA_RfVk_Kie';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         // ডাইনামিক ডিকশনারি ডাটাবেজ
         const languages = {
             bn: {
@@ -339,7 +347,7 @@
                 "c-hot": "হটলাইন নম্বর",
                 "c-wa": "<i class='fa-brands fa-whatsapp fa-lg me-2'></i> সরাসরি হোয়াটসঅ্যাপ করুন",
                 "m-title": "<i class='fa-solid fa-shield-halved me-2'></i>নিরাপদ লগইন",
-                "m-user-lbl": "ইউজার আইডি / অ্যাডমিন নাম",
+                "m-user-lbl": "ইউজার আইডি / এডমিন নাম",
                 "m-pass-lbl": "গোপন পাসওয়ার্ড",
                 "m-submit-btn": "পোর্টালে প্রবেশ করুন"
             },
@@ -380,7 +388,6 @@
             }
         };
 
-        // ল্যাঙ্গুয়েজ সুইচিং মেকানিজম
         function changeLanguage(lang) {
             document.getElementById('btn-bn').classList.remove('active');
             document.getElementById('btn-en').classList.remove('active');
@@ -399,8 +406,8 @@
             }
         }
 
-        // 🔐 ফিক্সড ফোল্ডার পাথ গেটওয়ে লজিক (S-01 থেকে S-25 এবং Admin)
-        document.getElementById('portalLoginForm').addEventListener('submit', function(e) {
+        // 🔐 Supabase ভিত্তিক লগইন কন্ট্রোলার
+        document.getElementById('portalLoginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const userInput = document.getElementById('loginUsername').value.trim();
             const passInput = document.getElementById('loginPassword').value.trim();
@@ -409,50 +416,53 @@
             
             errorDiv.classList.add('d-none');
 
-            // ১. 🛠️ আপডেট হওয়া অ্যাডমিন লগইন গেটওয়ে (সাকসেস টোস্ট এবং অটো-রিডাইরেক্ট সহ)
-            if (userInput === 'admin' && passInput === 'admin123') {
-                // মডালটি হাইড বা বন্ধ করে দেওয়া
+            // ১. এডমিন লগইন ভ্যালিডেশন
+            if (userInput.toLowerCase() === 'admin' && passInput === 'admin123') {
                 const loginModalEl = document.getElementById('loginModal');
                 const modalInstance = bootstrap.Modal.getInstance(loginModalEl);
                 if(modalInstance) modalInstance.hide();
                 
-                // প্রিমিয়াম সাকসেস নোটিফিকেশন বারটি স্ক্রিনে ভিজিবল করা
-                document.getElementById('toastMessage').innerHTML = "👋 স্বাগতম অ্যাডমিন! আপনার লগইন সফল হয়েছে। সেন্ট্রাল প্যানেলে নিয়ে যাওয়া হচ্ছে...";
+                document.getElementById('toastMessage').innerHTML = "👋 স্বাগতম এডমিন! এডমিন পোর্টালে নিয়ে যাওয়া হচ্ছে...";
                 toast.classList.remove('d-none-toast');
                 
-                // ১.৫ সেকেন্ড ডিলে দিয়ে admin.html ফাইলে অটোমেটিক ফরওয়ার্ড করা
                 setTimeout(() => {
                     toast.classList.add('d-none-toast');
-                    window.location.href = 'admin.html';
-                }, 1500);
+                    window.location.href = './admin/admin.html';
+                }, 1200);
                 return;
             }
 
-            // ২. মেম্বার/ইউজার ভ্যালিডেশন চেকার (S-01 থেকে S-25)
-            const userRegex = /^S-(0[1-9]|1[0-9]|2[0-5])$/; 
-            
-            if (userRegex.test(userInput)) {
-                if (passInput === '123456') { 
-                    // ব্রাউজার মেমরিতে কারেন্ট আইডিটি পুশ করা যাতে ড্যাশবোর্ড রিড করতে পারে
-                    localStorage.setItem('somrido_logged_user', userInput);
+            // ২. Supabase থেকে মেম্বার তথ্য যাচাই (S001 - S017)
+            try {
+                const { data, error } = await supabaseClient
+                    .from('members')
+                    .select('*')
+                    .eq('id', userInput.toUpperCase())
+                    .maybeSingle();
+
+                if (error) throw error;
+
+                if (data && data.password === passInput) {
+                    localStorage.setItem('somrido_logged_user', data.id);
 
                     const loginModalEl = document.getElementById('loginModal');
                     const modalInstance = bootstrap.Modal.getInstance(loginModalEl);
                     if(modalInstance) modalInstance.hide();
 
-                    document.getElementById('toastMessage').innerHTML = `👋 সফল লগইন! সদস্য ${userInput}, আপনার ড্যাশবোর্ড লোড হচ্ছে...`;
+                    document.getElementById('toastMessage').innerHTML = `👋 সফল লগইন! সদস্য ${data.name || data.id}, আপনার প্যানেল লোড হচ্ছে...`;
                     toast.classList.remove('d-none-toast');
 
                     setTimeout(() => {
                         toast.classList.add('d-none-toast');
-                        window.location.href = 'members.html';
-                    }, 1500);
+                        window.location.href = './admin/members.html';
+                    }, 1200);
                 } else {
-                    errorDiv.innerHTML = "❌ ভুল পাসওয়ার্ড! দয়া করে সঠিক পাসওয়ার্ড দিন।";
+                    errorDiv.innerHTML = "❌ ভুল ইউজার আইডি অথবা পাসওয়ার্ড!";
                     errorDiv.classList.remove('d-none');
                 }
-            } else {
-                errorDiv.innerHTML = "❌ ভুল ইউজার আইডি অথবা অ্যাডমিন নাম!";
+            } catch (err) {
+                console.error("Login Error:", err);
+                errorDiv.innerHTML = "❌ সার্ভার কানেকশন ত্রুটি! আবার চেষ্টা করুন।";
                 errorDiv.classList.remove('d-none');
             }
         });
@@ -465,7 +475,7 @@
                     loader.style.opacity = '0';
                     setTimeout(() => loader.style.display = 'none', 600);
                 }
-            }, 1200);
+            }, 1000);
         });
     </script>
 
@@ -478,40 +488,6 @@
             .catch((err) => console.log('Service Worker Registration Failed!', err));
         });
       }
-    </script>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyA47in40_VutzVKQUAV1CUSl6a0SbxDVy0",
-            authDomain: "somrido.firebaseapp.com",
-            projectId: "somrido",
-            storageBucket: "somrido.firebasestorage.app",
-            messagingSenderId: "377166664245",
-            appId: "1:377166664245:web:f08539e2af77d89275577c"
-        };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // লাইভ ডেটাবেজ কার্যক্রম সিনক্রোনাইজেশন
-        onSnapshot(collection(db, "somrido_works"), (snapshot) => {
-            const row = document.getElementById('dynamic-works-row');
-            if(snapshot.size > 0 && row) {
-                row.innerHTML = "";
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    row.innerHTML += `
-                        <div class="col-12 col-md-4">
-                            <div class="premium-card">
-                                <h5 class="fw-bold text-info">${data.title}</h5>
-                                <p class="text-secondary small">${data.description}</p>
-                            </div>
-                        </div>`;
-                });
-            }
-        });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
