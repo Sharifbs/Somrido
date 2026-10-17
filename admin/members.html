@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সমৃদ্ধ (Somrido) - মেম্বার ড্যাশবোর্ড</title>
+    <!-- Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts for Premium Bengali Feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-cyan: #06b6d4;
+            --dark-bg: #0b111e;
+            --card-bg: #151f32;
+            --border-color: #1e293b;
+            --text-muted: #94a3b8; 
+            --text-light: #f8fafc; 
+        }
+        body { 
+            background-color: var(--dark-bg); 
+            color: #ffffff; 
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        
+        /* 🧭 Navbar Style */
+        .navbar { 
+            background-color: #111827 !important; 
+            border-bottom: 1px solid #1f2937;
+        }
+        .dashboard-container {
+            margin-top: 110px;
+            padding-bottom: 60px;
+        }
+        
+        /* 🎴 Premium Cards Layout */
+        .premium-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+        }
+        
+        /* 👤 Profile Card Layout & Image Upload Overlay */
+        .profile-img-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid var(--primary-cyan);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+        }
+        .image-change-overlay {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #06b6d4;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: 2px solid var(--card-bg);
+            transition: transform 0.2s;
+        }
+        .image-change-overlay:hover {
+            transform: scale(1.1);
+        }
+        .profile-info-item {
+            border-bottom: 1px solid #1e293b;
+            padding: 10px 0;
+        }
+        .profile-info-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* 📊 Stat Cards Text & Icon Alignment */
+        .stat-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+        .stat-card .text-content {
+            display: flex;
+            flex-direction: column;
+        }
+        .stat-card .title-text {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .stat-card .amount-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        
+        /* Border Glowing Colors */
+        .border-cyan { border: 1px solid #06b6d4 !important; }
+        .border-emerald { border: 1px solid #10b981 !important; }
+        .border-amber { border: 1px solid #f59e0b !important; }
+        .border-indigo { border: 1px solid #6366f1 !important; }
+
+        .stat-icon { font-size: 2.2rem; }
+
+        /* Highlight Mini Cards for Members Profile Bottom */
+        .highlight-mini-card {
+            background-color: #0f172a; 
+            border-radius: 12px;
+            padding: 14px 10px;
+            text-align: center;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .highlight-mini-card.fund { border: 1px solid rgba(6, 182, 212, 0.4); }
+        .highlight-mini-card.donation { border: 1px solid rgba(245, 158, 11, 0.4); }
+
+        /* 📋 Table Premium Setup */
+        .table-premium {
+            background-color: var(--card-bg);
+            color: white;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .table-premium th {
+            background-color: #1a2436;
+            color: #06b6d4;
+            font-weight: 700;
+            padding: 14px;
+            border: none;
+        }
+        .table-premium td {
+            padding: 14px;
+            border-bottom: 1px solid var(--border-color);
+            color: #9ca3af;
+        }
+        .table-premium tr:last-child td { border-bottom: none; }
+
+        .badge-kisti { background-color: #06b6d4; color: #000; font-weight: 700; border-radius: 6px; }
+        .badge-kallan { background-color: #f59e0b; color: #000; font-weight: 700; border-radius: 6px; }
+
+        /* 🔒 মডাল এবং ইনপুট ফিল্ডের আপগ্রেডেড কালার কম্বিনেশন */
+        .modal-content { 
+            background-color: #111827 !important; 
+            color: var(--text-light) !important; 
+            border: 1px solid #374151 !important; 
+            border-radius: 16px;
+        }
+        
+        .modal-body label, .modal-body .form-label {
+            color: var(--text-muted) !important;
+            font-weight: 600 !important;
+            font-size: 0.95rem !important;
+            margin-bottom: 6px !important;
+            display: block !important;
+        }
+
+        .form-control { 
+            background-color: #1f2937 !important; 
+            border: 1px solid #374151 !important; 
+            color: #ffffff !important; 
+            padding: 10px 12px;
+        }
+        
+        .form-control::placeholder {
+            color: #6b7280 !important;
+            opacity: 1;
+        }
+
+        .form-control:focus { 
+            background-color: #1f2937 !important; 
+            border-color: var(--primary-cyan) !important; 
+            color: #ffffff !important; 
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.4) !important; 
+        }
+
+        .btn-logout {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            padding: 6px 16px;
+        }
+        .btn-logout:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 🧭 ন্যাভিগেশন বার -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-info fs-3" href="#">SOMRIDO</a>
+            <div class="ms-auto d-flex align-items-center">
+                <span class="text-secondary me-3"><i class="fa-solid fa-user-check text-info me-1"></i> মেম্বার জোন</span>
+                <button class="btn btn-logout btn-sm" onclick="handleLogout()">
+                    <i class="fa-solid fa-right-from-bracket me-2"></i>লগআউট
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 📊 ড্যাশবোর্ড কন্টেইনার -->
+    <div class="container dashboard-container">
+        
+        <!-- স্বাগতম ও আইডি CARD -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="premium-card d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="fw-bold text-white mb-2">স্বাগতম, সমৃদ্ধ সদস্য!</h2>
+                        <p class="text-secondary mb-0 small">আপনার ক্লাউড অ্যাকাউন্ট লেজার প্রোফাইলটি নিচে সফলভাবে লোড হয়েছে।</p>
+                    </div>
+                    <div style="border: 1px solid #334155; border-radius: 30px; padding: 12px 35px; background: #0f172a;">
+                        <span id="displayMemberID" class="fw-bold text-info fs-4">लोड হচ্ছে...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- 👤 বাম পাশের কলাম: Full Profile Details -->
+            <div class="col-12 col-lg-4">
+                <div class="premium-card h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="fw-bold text-info mb-0"><i class="fa-solid fa-id-card me-2"></i>সদস্য প্রোফাইল</h5>
+                            <button class="btn btn-sm btn-outline-info rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                                <i class="fa-solid fa-user-pen me-1"></i> এডিট
+                            </button>
+                        </div>
+                        
+                        <!-- প্রোফাইল পিকচার চেঞ্জার উইজেট -->
+                        <div class="profile-img-wrapper mb-4">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200&h=200" alt="Member Avatar" class="profile-img" id="memberPhoto">
+                            <label for="photoUploader" class="image-change-overlay">
+                                <i class="fa-solid fa-camera text-dark small"></i>
+                            </label>
+                            <input type="file" id="photoUploader" accept="image/*" class="d-none" onchange="uploadProfilePicture(this)">
+                        </div>
+                        
+                        <!-- মেম্বার ডিটেইলস বিবরণী -->
+                        <div class="profile-details mt-3">
+                            <div class="profile-info-item d-flex justify-content-between">
+                                <span class="text-muted small">পূর্ণ নাম:</span>
+                                <span class="fw-bold text-white" id="m-full-name">লোড হচ্ছে...</span>
+                            </div>
+                            <div class="profile-info-item d-flex justify-content-between">
+                                <span class="text-muted small">মোবাইল নম্বর:</span>
+                                <span class="fw-bold text-warning" id="m-phone">লোড হচ্ছে...</span>
+                            </div>
+                            <div class="profile-info-item d-flex justify-content-between">
+                                <span class="text-muted small">যোগদানের তারিখ:</span>
+                                <span class="fw-bold text-white" id="m-join-date">লোড হচ্ছে...</span>
+                            </div>
+                            <div class="profile-info-item d-flex justify-content-between">
+                                <span class="text-muted small">রক্তের গ্রুপ:</span>
+                                <span class="fw-bold text-danger" id="m-blood">লোড হচ্ছে...</span>
+                            </div>
+                            
+                            <!-- ঠিকানার বিবরণ -->
+                            <div class="mt-4 pt-2" style="border-top: 1px dashed #334155;">
+                                <h6 class="fw-bold text-info mb-3"><i class="fa-solid fa-map-location-dot me-2"></i>ঠিকানার বিবরণ</h6>
+                                <div class="mb-2">
+                                    <span class="text-muted small d-block">গ্রাম/মহল্লা:</span>
+                                    <span class="text-white fw-semibold small" id="m-village">লোড হচ্ছে...</span>
+                                </div>
+                                <div class="mb-2">
+                                    <span class="text-muted small d-block">ডাকঘর ও থানা:</span>
+                                    <span class="text-white fw-semibold small" id="m-thana">লোড হচ্ছে...</span>
+                                </div>
+                                <div>
+                                    <span class="text-muted small d-block">জেলা:</span>
+                                    <span class="text-white fw-semibold small" id="m-district">লোড হচ্ছে...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 💰 হাইলাইটেড টোটাল ফান্ড ব্যালেন্স এবং ডোনেশন ব্যালেন্স -->
+                    <div class="mt-4 pt-3" style="border-top: 2px solid #1e293b;">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <div class="highlight-mini-card fund">
+                                    <span class="text-info d-block mb-1 fw-bold" style="font-size: 0.85rem; letter-spacing: 0.3px;">Total Fund Balance</span>
+                                    <span class="fw-bold text-white fs-5" id="lbl-total-fund">৳ ০</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="highlight-mini-card donation">
+                                    <span class="text-warning d-block mb-1 fw-bold" style="font-size: 0.85rem; letter-spacing: 0.3px;">Donation Balance</span>
+                                    <span class="fw-bold text-white fs-5" id="lbl-donation-bal">৳ ০</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 📊 ডান পাশের কলাম: Stats Grid and Ledger Table -->
+            <div class="col-12 col-lg-8">
+                <!-- স্ট্যাটাস গ্রিড কার্ডস -->
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-sm-6">
+                        <div class="premium-card stat-card border-cyan">
+                            <div class="text-content">
+                                <span class="title-text">মোট সঞ্চয় জমা</span>
+                                <span class="amount-text" id="admin-total-savings">৳ ০</span>
+                            </div>
+                            <i class="fa-solid fa-piggy-bank stat-icon text-info"></i>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="premium-card stat-card border-emerald">
+                            <div class="text-content">
+                                <span class="title-text">চলতি মাসের কিস্তি</span>
+                                <span class="amount-text" id="admin-monthly-kisti">৳ ০</span>
+                            </div>
+                            <i class="fa-solid fa-calendar-check stat-icon text-success"></i>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="premium-card stat-card border-amber">
+                            <div class="text-content">
+                                <span class="title-text">কল্যাণ ফান্ড অনুদান</span>
+                                <span class="amount-text" id="admin-welfare-donation">৳ ০</span>
+                            </div>
+                            <i class="fa-solid fa-hand-holding-heart stat-icon text-warning"></i>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="premium-card stat-card border-indigo">
+                            <div class="text-content">
+                                <span class="title-text">অ্যাকাউন্ট স্ট্যাটাস</span>
+                                <span class="mt-2"><span class="badge rounded-pill px-3 py-2 fw-bold" style="font-size:0.85rem;" id="admin-account-status">অজানা</span></span>
+                            </div>
+                            <i class="fa-solid fa-user-check stat-icon text-indigo"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- জমার বিবরণী টেবিল -->
+                <div class="premium-card p-0" style="overflow: hidden;">
+                    <div class="p-4" style="background-color: var(--card-bg); border-bottom: 1px solid var(--border-color);">
+                        <h5 class="fw-bold text-info mb-0"><i class="fa-solid fa-receipt me-2"></i>আপনার সাম্প্রতিক জমার বিবরণী (লেজার ট্র্যাকিং)</h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-premium align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>তারিখ ও সময়</th>
+                                    <th>ট্রানজেকশন আইডি</th>
+                                    <th>বিবরণ</th>
+                                    <th>ধরণ</th>
+                                    <th class="text-end">পরিমাণ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ledgerTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 📝 প্রোফাইল এডিট পপ-আপ মডাল -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title fw-bold text-info"><i class="fa-solid fa-user-gear me-2"></i>প্রোফাইল আপডেট করুন</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProfileForm" onsubmit="saveProfileData(event)">
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">পূর্ণ নাম</label>
+                            <input type="text" id="inputName" class="form-control" required placeholder="আপনার পূর্ণ নাম">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">মোবাইল নম্বর</label>
+                            <input type="text" id="inputPhone" class="form-control" required placeholder="017xxxxxxxx">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">রক্তের গ্রুপ</label>
+                            <input type="text" id="inputBlood" class="form-control" placeholder="যেমন: A+">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">গ্রাম/মহল্লা</label>
+                            <input type="text" id="inputVillage" class="form-control" required placeholder="আপনার গ্রাম বা এলাকার নাম">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">ডাকঘর ও থানা</label>
+                            <input type="text" id="inputThana" class="form-control" required placeholder="থানার নাম">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">জেলা</label>
+                            <input type="text" id="inputDistrict" class="form-control" required placeholder="জেলার নাম">
+                        </div>
+                        <div class="text-end mt-4">
+                            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">বাতিল</button>
+                            <button type="submit" class="btn btn-info text-white fw-bold px-4">সংরক্ষণ করুন</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK Modules (v10+) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+
+        // ✅ আপনার দেওয়া সচল Firebase API Config যুক্ত করা হয়েছে
+        const firebaseConfig = {
+            apiKey: "AIzaSyA47in40_VutzVKQUAV1CUSl6a0SbxDVy0",
+            authDomain: "somrido.firebaseapp.com",
+            databaseURL: "https://somrido-default-rtdb.firebaseio.com", // Realtime Database-এর সঠিক পাথ
+            projectId: "somrido",
+            storageBucket: "somrido.firebasestorage.app",
+            messagingSenderId: "377166664245",
+            appId: "1:377166664245:web:f08539e2af77d89275577c",
+            measurementId: "G-EWLFGQL1DS"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const analytics = getAnalytics(app);
+
+        let currentUserId = localStorage.getItem('somrido_logged_user') || "S-01";
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('displayMemberID').innerText = currentUserId;
+            listenToMemberData();
+        });
+
+        // 🔄 লাইভ ডাটা লিসেনিং
+        function listenToMemberData() {
+            const memberRef = ref(db, 'members/' + currentUserId);
+            onValue(memberRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    document.getElementById('m-full-name').innerText = data.name || "N/A";
+                    document.getElementById('m-phone').innerText = data.phone || "N/A";
+                    document.getElementById('m-join-date').innerText = data.joinDate || "N/A";
+                    document.getElementById('m-blood').innerText = data.blood || "N/A";
+                    document.getElementById('m-village').innerText = data.village || "N/A";
+                    document.getElementById('m-thana').innerText = data.thana || "N/A";
+                    document.getElementById('m-district').innerText = data.district || "N/A";
+                    
+                    if(data.photo) {
+                        document.getElementById('memberPhoto').src = data.photo;
+                    }
+
+                    document.getElementById('inputName').value = data.name || "";
+                    document.getElementById('inputPhone').value = data.phone || "";
+                    document.getElementById('inputBlood').value = data.blood || "";
+                    document.getElementById('inputVillage').value = data.village || "";
+                    document.getElementById('inputThana').value = data.thana || "";
+                    document.getElementById('inputDistrict').value = data.district || "";
+
+                    document.getElementById('admin-total-savings').innerText = "৳ " + (data.totalSavings || 0);
+                    document.getElementById('admin-monthly-kisti').innerText = "৳ " + (data.monthlyKisti || 0);
+                    document.getElementById('admin-welfare-donation').innerText = "৳ " + (data.welfareDonation || 0);
+                    
+                    document.getElementById('lbl-total-fund').innerText = "৳ " + (data.totalFundBalance || 0);
+                    document.getElementById('lbl-donation-bal').innerText = "৳ " + (data.donationBalance || 0);
+
+                    const statusBadge = document.getElementById('admin-account-status');
+                    if(data.status === "Active" || data.status === "সক্রিয়") {
+                        statusBadge.innerText = "সক্রিয় (Active)";
+                        statusBadge.className = "badge bg-success rounded-pill px-3 py-2 fw-bold";
+                    } else {
+                        statusBadge.innerText = "নিষ্ক্রিয় (Inactive)";
+                        statusBadge.className = "badge bg-danger rounded-pill px-3 py-2 fw-bold";
+                    }
+
+                    renderLedgerTable(data.transactions);
+                }
+            });
+        }
+
+        // 💾 ফায়ারবেসে সরাসরি ডেটা আপডেট করা (১০০% সচল)
+        window.saveProfileData = function(event) {
+            event.preventDefault();
+            const updates = {
+                name: document.getElementById('inputName').value.trim(),
+                phone: document.getElementById('inputPhone').value.trim(),
+                blood: document.getElementById('inputBlood').value.trim(),
+                village: document.getElementById('inputVillage').value.trim(),
+                thana: document.getElementById('inputThana').value.trim(),
+                district: document.getElementById('inputDistrict').value.trim()
+            };
+
+            update(ref(db, 'members/' + currentUserId), updates).then(() => {
+                const editModal = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
+                if(editModal) editModal.hide();
+                alert("প্রোফাইল সফলভাবে আপডেট হয়েছে!");
+            }).catch((error) => {
+                console.error("আপডেট ব্যর্থ হয়েছে:", error);
+                alert("ত্রুটি: ডাটাবেজ আপডেট করা যায়নি। অনুগ্রহ করে রুলস চেক করুন।");
+            });
+        };
+
+        window.uploadProfilePicture = function(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Image = e.target.result;
+                    update(ref(db, 'members/' + currentUserId), { photo: base64Image });
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        };
+
+        function renderLedgerTable(transactions) {
+            const tbody = document.getElementById('ledgerTableBody');
+            tbody.innerHTML = "";
+            if (!transactions) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">কোনো ট্রানজেকশন রেকর্ড পাওয়া যায়নি।</td></tr>`;
+                return;
+            }
+
+            Object.values(transactions).reverse().forEach(txn => {
+                const badgeClass = txn.type === 'কিস্তি' ? 'badge-kisti' : 'badge-kallan';
+                const row = `
+                    <tr>
+                        <td>${txn.date}</td>
+                        <td class="text-warning fw-bold">${txn.id}</td>
+                        <td>${txn.details}</td>
+                        <td><span class="badge ${badgeClass} px-3 py-1.5">${txn.type}</span></td>
+                        <td class="text-end text-success fw-bold fs-5">+ ৳ ${txn.amount}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        window.handleLogout = function() {
+            localStorage.removeItem('somrido_logged_user');
+            window.location.href = 'index.html';
+        };
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

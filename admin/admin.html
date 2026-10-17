@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOMRIDO [ADMIN]</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-cyan: #06b6d4;
+            --dark-bg: #0b111e;
+            --card-bg: #151f32;
+            --border-color: #1e293b;
+            --text-muted: #94a3b8; 
+            --text-light: #f8fafc; 
+        }
+        body { 
+            background-color: var(--dark-bg); 
+            color: #ffffff; 
+            font-family: 'Hind Siliguri', sans-serif;
+            padding-top: 80px;
+        }
+        .navbar { 
+            background-color: #111827 !important; 
+            border-bottom: 1px solid #1f2937;
+        }
+        .premium-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            height: 100%;
+        }
+        .card-title {
+            color: #06b6d4;
+            font-weight: 700;
+            font-size: 1.15rem;
+            margin-bottom: 20px;
+        }
+        .form-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+        .form-control, .form-select { 
+            background-color: #1f2937 !important; 
+            border: 1px solid #374151 !important; 
+            color: #ffffff !important; 
+            padding: 10px 12px;
+        }
+        .form-control:focus, .form-select:focus { 
+            border-color: var(--primary-cyan) !important; 
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.4) !important; 
+        }
+        .btn-cyan {
+            background-color: #06b6d4;
+            color: #000;
+            font-weight: bold;
+        }
+        .btn-cyan:hover {
+            background-color: #0891b2;
+            color: #000;
+        }
+        .btn-emerald {
+            background-color: #10b981;
+            color: white;
+            font-weight: bold;
+        }
+        .btn-emerald:hover {
+            background-color: #059669;
+        }
+        /* Table Style */
+        .table-premium {
+            background-color: var(--card-bg);
+            color: white;
+            width: 100%;
+        }
+        .table-premium th {
+            background-color: #1a2436;
+            color: #06b6d4;
+            padding: 12px;
+        }
+        .table-premium td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            color: #9ca3af;
+        }
+        .badge-kisti { background-color: #06b6d4; color: #000; font-weight: bold; }
+        .badge-kallan { background-color: #f59e0b; color: #000; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand fw-bold text-info fs-4" href="#">SOMRIDO <span class="text-warning small" style="font-size: 0.75rem;">[ADMIN]</span></a>
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <span class="text-secondary small"><i class="fa-solid fa-lock text-warning me-1"></i> সেন্ট্রাল ড্যাশবোর্ড</span>
+                <button onclick="window.location.href='../index.html'" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-power-off me-1"></i> লগআউট</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-4 mt-4">
+        <div class="row g-4">
+            
+            <!-- 👤 বাম পাশের সেকশন: মেম্বার আইডি কন্ট্রোল ও এন্ট্রি -->
+            <div class="col-12 col-lg-5">
+                <div class="premium-card">
+                    <h5 class="card-title"><i class="fa-solid fa-user-gear me-2"></i>মেম্বার আইডি কন্ট্রোল ও এন্ট্রি</h5>
+                    
+                    <!-- সার্চ বক্স -->
+                    <div class="mb-3">
+                        <label class="form-label">মেম্বার আইডি দিয়ে খুঁজুন</label>
+                        <div class="input-group">
+                            <input type="text" id="searchMemberId" class="form-control" placeholder="মেম্বার আইডি লিখুন (e.g., S001)">
+                            <button class="btn btn-cyan" type="button" onclick="searchMember()"><i class="fa-solid fa-magnifying-glass me-1"></i> খুঁজুন</button>
+                        </div>
+                    </div>
+                    
+                    <hr style="border-color: #334155;">
+
+                    <!-- মেম্বার ইনফো ফর্ম -->
+                    <form id="memberUpdateForm" onsubmit="updateMemberProfile(event)">
+                        <div class="mb-3">
+                            <label class="form-label">মেম্বার আইডি</label>
+                            <input type="text" id="formMemberId" class="form-control" readonly placeholder="উপরে আইডি সার্চ করুন">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">পূর্ণ নাম</label>
+                            <input type="text" id="formName" class="form-control" placeholder="সদস্যের সম্পূর্ণ নাম">
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-7 mb-3">
+                                <label class="form-label">মোবাইল নম্বর</label>
+                                <input type="text" id="formPhone" class="form-control" placeholder="017xxxxxxxx">
+                            </div>
+                            <div class="col-md-5 mb-3">
+                                <label class="form-label">রক্তের গ্রুপ</label>
+                                <input type="text" id="formBlood" class="form-control" placeholder="e.g., A+">
+                            </div>
+                        </div>
+
+                        <!-- 🔑 সদস্য পাসওয়ার্ড এডিটিং ইনপুট ফিল্ড -->
+                        <div class="mb-3">
+                            <label class="form-label text-warning"><i class="fa-solid fa-key me-1"></i>মেম্বার লগইন পাসওয়ার্ড</label>
+                            <input type="text" id="formPassword" class="form-control border-warning" placeholder="সদস্যের পাসওয়ার্ড (যেমন: 123456)">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">যোগদানের তারিখ</label>
+                                <input type="text" id="formJoinDate" class="form-control" placeholder="১২ জানুয়ারি, ২০২৫">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">অ্যাকাউন্ট স্ট্যাটাস</label>
+                                <select id="formStatus" class="form-select">
+                                    <option value="Active">Active (সক্রিয়)</option>
+                                    <option value="Inactive">Inactive (নিষ্ক্রিয়)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">গ্রাম</label>
+                                <input type="text" id="formVillage" class="form-control" placeholder="গ্রাম">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">থানা</label>
+                                <input type="text" id="formThana" class="form-control" placeholder="থানা">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">জেলা</label>
+                                <input type="text" id="formDistrict" class="form-control" placeholder="জেলা">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-cyan w-100 mt-2 py-2"><i class="fa-solid fa-user-check me-2"></i>মেম্বার প্রোফাইল ও পাসওয়ার্ড আপডেট করুন</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 💰 ডান পাশের সেকশন: টাকা কালেকশন, এডমিন পাসওয়ার্ড ও ট্রানজেকশন লগ -->
+            <div class="col-12 col-lg-7">
+                <div class="row g-4">
+                    
+                    <!-- 🔒 এডমিন সিকিউরিটি ও ইনিশিয়ালাইজেশন কন্ট্রোল -->
+                    <div class="col-12">
+                        <div class="premium-card">
+                            <h5 class="card-title text-warning"><i class="fa-solid fa-shield-halved me-2"></i>এডমিন নিরাপত্তা সেটিংস ও ডাটাবেস ইনিশিয়ালাইজেশন</h5>
+                            <div class="row g-3">
+                                <div class="col-12 col-md-8">
+                                    <form onsubmit="changeAdminPassword(event)" class="d-flex gap-2">
+                                        <input type="password" id="newAdminPass" class="form-control" placeholder="নতুন এডমিন পাসওয়ার্ড লিখুন" required>
+                                        <button type="submit" class="btn btn-warning fw-bold text-nowrap"><i class="fa-solid fa-key me-1"></i>এডমিন পাসওয়ার্ড চেঞ্জ</button>
+                                    </form>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <button onclick="seedInitialMembers()" class="btn btn-outline-info w-100 fw-bold"><i class="fa-solid fa-database me-1"></i>S001-S017 ডাটা সিড করুন</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- টাকা কালেকশন ফর্ম -->
+                    <div class="col-12">
+                        <div class="premium-card">
+                            <h5 class="card-title text-success"><i class="fa-solid fa-money-bill-transfer me-2"></i>টাকা কালেকশন এবং ফান্ড এন্ট্রি</h5>
+                            
+                            <form id="transactionForm" onsubmit="submitTransaction(event)">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">জমার ধরণ (Transaction Type)</label>
+                                        <select id="txnType" class="form-select">
+                                            <option value="কিস্তি">কিস্তি (Savings Kisti)</option>
+                                            <option value="কল্যাণ ফান্ড">কল্যাণ ফান্ড (Welfare Donation)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">টাকার পরিমাণ (৳)</label>
+                                        <input type="number" id="txnAmount" class="form-control" placeholder="500" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">বিবরণ (Details)</label>
+                                    <input type="text" id="txnDetails" class="form-control" placeholder="চলতি মাসের নিয়মিত কিস্তি জমা">
+                                </div>
+                                <button type="submit" class="btn btn-emerald w-100 py-2"><i class="fa-solid fa-circle-plus me-2"></i>টাকা জমা করুন (অটোমেটিক ব্যালেন্স অ্যাড হবে)</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- রিসেন্ট ট্রানজেকশন লগ টেবিল -->
+                    <div class="col-12">
+                        <div class="premium-card">
+                            <h5 class="card-title text-warning"><i class="fa-solid fa-clock-rotate-left me-2"></i>রিসেন্ট ট্রানজেকশন লগ</h5>
+                            <div class="table-responsive">
+                                <table class="table table-premium align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>তারিখ</th>
+                                            <th>বিবরণ</th>
+                                            <th>ধরণ</th>
+                                            <th>পরিমাণ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminLogTableBody">
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted py-4"><i class="fa-solid fa-database me-2"></i>কোনো মেম্বার আইডি লোড করা হয়নি।</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Supabase JS Client CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // 🔑 আপনার দেওয়া Supabase API Key যুক্ত করা হয়েছে
+        const SUPABASE_URL = 'https://iO-6iLqARdcS-KD48XehzA_RfVk_Kie.supabase.co'; // আপনার প্রজেক্টের সঠিক Supabase URL দিন (প্রয়োজন হলে আপডেট করে নিন)
+        const SUPABASE_KEY = 'sb_publishable_iO-6iLqARdcS-KD48XehzA_RfVk_Kie';
+
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        let activeMemberData = null;
+
+        // 🔍 ১. মেম্বার সার্চ (S001-S017)
+        async function searchMember() {
+            const memberId = document.getElementById('searchMemberId').value.trim().toUpperCase();
+            if(!memberId) {
+                alert("অনুগ্রহ করে একটি মেম্বার আইডি লিখুন (যেমন: S001)!");
+                return;
+            }
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('members')
+                    .select('*')
+                    .eq('id', memberId)
+                    .maybeSingle();
+
+                if (error) throw error;
+
+                if (data) {
+                    activeMemberData = data;
+                    
+                    document.getElementById('formMemberId').value = data.id;
+                    document.getElementById('formName').value = data.name || '';
+                    document.getElementById('formPhone').value = data.phone || '';
+                    document.getElementById('formBlood').value = data.blood || '';
+                    document.getElementById('formPassword').value = data.password || '123';
+                    document.getElementById('formJoinDate').value = data.join_date || '';
+                    document.getElementById('formStatus').value = data.status || 'Active';
+                    document.getElementById('formVillage').value = data.village || '';
+                    document.getElementById('formThana').value = data.thana || '';
+                    document.getElementById('formDistrict').value = data.district || '';
+
+                    renderAdminTxnTable(data.transactions || []);
+                    alert("সদস্য " + data.id + "-এর তথ্য সফলভাবে লোড হয়েছে!");
+                } else {
+                    alert("দুঃখিত, এই আইডি'র কোনো মেম্বার খুঁজে পাওয়া যায়নি! ডানদিকের 'S001-S017 ডাটা সিড করুন' বাটনে ক্লিক করে তথ্য ডাটাবেসে সেভ করে নিন।");
+                }
+            } catch (error) {
+                console.error("Supabase Error:", error);
+                alert("সার্ভার ত্রুটি: " + error.message);
+            }
+        }
+
+        // 💾 ২. মেম্বার তথ্য ও পাসওয়ার্ড আপডেট
+        async function updateMemberProfile(event) {
+            event.preventDefault();
+            const memberId = document.getElementById('formMemberId').value;
+            if(!memberId) {
+                alert("আগে মেম্বার আইডি সার্চ করে নিন!");
+                return;
+            }
+
+            try {
+                const { error } = await supabaseClient
+                    .from('members')
+                    .update({
+                        name: document.getElementById('formName').value.trim(),
+                        phone: document.getElementById('formPhone').value.trim(),
+                        blood: document.getElementById('formBlood').value.trim(),
+                        password: document.getElementById('formPassword').value.trim(),
+                        join_date: document.getElementById('formJoinDate').value.trim(),
+                        status: document.getElementById('formStatus').value,
+                        village: document.getElementById('formVillage').value.trim(),
+                        thana: document.getElementById('formThana').value.trim(),
+                        district: document.getElementById('formDistrict').value.trim()
+                    })
+                    .eq('id', memberId);
+
+                if (error) throw error;
+                alert("মেম্বার প্রোফাইল ও পাসওয়ার্ড সফলভাবে আপডেট করা হয়েছে! 🎉");
+            } catch (error) {
+                alert("আপডেট করা যায়নি: " + error.message);
+            }
+        }
+
+        // 🔐 ৩. এডমিন পাসওয়ার্ড আপডেট
+        async function changeAdminPassword(event) {
+            event.preventDefault();
+            const newPass = document.getElementById('newAdminPass').value.trim();
+            if(!newPass) return;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('system_settings')
+                    .upsert({ id: 'admin_auth', username: 'admin', password: newPass });
+
+                if (error) throw error;
+                alert("এডমিন পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে!");
+                document.getElementById('newAdminPass').value = '';
+            } catch (e) {
+                alert("পাসওয়ার্ড সেভ করা যায়নি: " + e.message);
+            }
+        }
+
+        // ➕ ৪. টাকা কালেকশন এন্ট্রি
+        async function submitTransaction(event) {
+            event.preventDefault();
+            const memberId = document.getElementById('formMemberId').value;
+            if(!memberId || !activeMemberData) {
+                alert("আগে মেম্বার আইডি সার্চ করে লোড করুন!");
+                return;
+            }
+
+            const type = document.getElementById('txnType').value;
+            const amount = parseFloat(document.getElementById('txnAmount').value);
+            const details = document.getElementById('txnDetails').value.trim() || "নিয়মিত জমা";
+            
+            const now = new Date();
+            const dateString = now.toLocaleDateString('bn-BD') + " | " + now.toLocaleTimeString('bn-BD');
+            const txnId = "TXN-" + Math.floor(100000 + Math.random() * 900000);
+
+            const newTransaction = {
+                id: txnId,
+                date: dateString,
+                type: type,
+                amount: amount,
+                details: details
+            };
+
+            let currentSavings = parseFloat(activeMemberData.total_savings || 0);
+            let currentWelfare = parseFloat(activeMemberData.welfare_donation || 0);
+            let updatedTxns = activeMemberData.transactions || [];
+            updatedTxns.push(newTransaction);
+
+            if (type === "কিস্তি") {
+                currentSavings += amount;
+            } else if (type === "কল্যাণ ফান্ড") {
+                currentWelfare += amount;
+            }
+
+            try {
+                const { error } = await supabaseClient
+                    .from('members')
+                    .update({
+                        total_savings: currentSavings,
+                        welfare_donation: currentWelfare,
+                        transactions: updatedTxns
+                    })
+                    .eq('id', memberId);
+
+                if (error) throw error;
+
+                alert("টাকা সফলভাবে কালেকশন করা হয়েছে এবং লেজার আপডেট হয়েছে! 💰");
+                searchMember();
+                document.getElementById('txnAmount').value = '';
+                document.getElementById('txnDetails').value = '';
+            } catch (error) {
+                alert("টাকা জমা করা যায়নি: " + error.message);
+            }
+        }
+
+        // 🚀 ৫. S001-S017 ডাটা সিড করার ফাংশন
+        async function seedInitialMembers() {
+            const list = [
+                { id: "S001", name: "Md. Shariful Islam (Shobuz)", password: "123" },
+                { id: "S002", name: "Omer Faruk", password: "123" },
+                { id: "S003", name: "Md. Dulal Hossain PK", password: "123" },
+                { id: "S004", name: "Md. Murad", password: "123" },
+                { id: "S005", name: "Md. Anower Hossain", password: "123" },
+                { id: "S006", name: "Md. Asadul", password: "123" },
+                { id: "S007", name: "Momin Mia", password: "123" },
+                { id: "S008", name: "Ibrahim", password: "123" },
+                { id: "S009", name: "Bulbul Ahmed", password: "123" },
+                { id: "S010", name: "Md. Rasel", password: "123" },
+                { id: "S011", name: "Md. Ronju", password: "123" },
+                { id: "S012", name: "Md. Shahriar Ahmed", password: "123" },
+                { id: "S013", name: "Md. Ashik", password: "123" },
+                { id: "S014", name: "Arman parvez Rafi", password: "123" },
+                { id: "S015", name: "Md. Abdul Monayem", password: "123" },
+                { id: "S016", name: "Md. Kawsar", password: "123" },
+                { id: "S017", name: "Md. Robiul", password: "123" }
+            ];
+
+            try {
+                const { error } = await supabaseClient
+                    .from('members')
+                    .upsert(list, { onConflict: 'id' });
+
+                if (error) throw error;
+                alert("S001 থেকে S017 ১৭ জন মেম্বারের ডাটা সফলভাবে Supabase-এ সেভ হয়েছে!");
+            } catch(e) {
+                alert("ইনিশিয়ালাইজেশান ত্রুটি: " + e.message);
+            }
+        }
+
+        function renderAdminTxnTable(transactions) {
+            const tbody = document.getElementById('adminLogTableBody');
+            tbody.innerHTML = "";
+
+            if(!transactions || transactions.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted">কোনো ট্রানজেকশন রেকর্ড নেই।</td></tr>`;
+                return;
+            }
+
+            transactions.slice().reverse().forEach(txn => {
+                const badgeClass = txn.type === 'কিস্তি' ? 'badge-kisti' : 'badge-kallan';
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${txn.date || ''}</td>
+                        <td>${txn.details || ''}</td>
+                        <td><span class="badge ${badgeClass}">${txn.type || ''}</span></td>
+                        <td class="text-success fw-bold">+ ৳${txn.amount || 0}</td>
+                    </tr>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>

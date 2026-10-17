@@ -1,0 +1,21 @@
+{
+  "short_name": "Somrido",
+  "name": "Somrido Membership Portal",
+  "icons": [
+    {
+      "src": "image/image01.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "image/image01.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/index.html",
+  "background_color": "#0f172a",
+  "theme_color": "#06b6d4",
+  "display": "standalone",
+  "orientation": "portrait"
+}

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সমৃদ্ধ (Somrido) - প্রিমিয়াম মেম্বারশিপ পোর্টাল</title>
+
+    <!-- 📱 PWA Support Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#06b6d4">
+    <link rel="apple-touch-icon" href="image/image01.png">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-cyan: #06b6d4;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+        }
+        body { 
+            background-color: var(--dark-bg); 
+            color: #ffffff; 
+            font-family: 'Hind Siliguri', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        /* 🌀 1. Premium Loader Style */
+        #premium-loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--dark-bg);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.6s ease;
+        }
+        .loader-ring {
+            width: 80px; height: 80px;
+            border: 4px solid #334155;
+            border-top: 4px solid var(--primary-cyan);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* ✨ 2. General Premium UI Styles */
+        .navbar { background-color: rgba(30, 41, 59, 0.9) !important; backdrop-filter: blur(10px); }
+        .hero-section {
+            background: linear-gradient(135deg, #0f172a 30%, #1e1b4b 100%);
+            padding: 120px 0 80px 0;
+        }
+        .section-title { font-weight: 700; color: var(--primary-cyan); margin-bottom: 40px; text-align: center; }
+        .premium-card {
+            background-color: var(--card-bg);
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 25px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .premium-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-cyan);
+        }
+        .gallery-img {
+            width: 100%; height: 250px; object-fit: cover;
+            border-radius: 12px; transition: transform 0.3s ease;
+        }
+        .gallery-img:hover { transform: scale(1.03); }
+        .footer { background-color: #020617; border-top: 1px solid #1e293b; padding: 30px 0; }
+        
+        /* 🔒 Auth Modal Overrides */
+        .modal-content { background-color: var(--card-bg); color: white; border: 1px solid #334155; border-radius: 16px; }
+        .form-control { background-color: var(--dark-bg); border: 1px solid #334155; color: white; }
+        .form-control:focus { background-color: var(--dark-bg); border-color: var(--primary-cyan); color: white; box-shadow: none; }
+
+        /* 🌐 Language Button Style (Right Side Fit) */
+        .lang-btn-group .btn {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-color: #334155;
+            color: #94a3b8;
+        }
+        .lang-btn-group .btn.active {
+            background-color: var(--primary-cyan);
+            border-color: var(--primary-cyan);
+            color: #fff;
+            font-weight: bold;
+        }
+
+        /* 🚀 Glowing Premium Login Button */
+        .btn-premium-login {
+            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            color: #ffffff !important;
+            font-weight: 700;
+            border: none;
+            border-radius: 30px;
+            padding: 8px 24px;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .btn-premium-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.8);
+            letter-spacing: 0.5px;
+        }
+
+        /* 🟢 Success Toast Notification Overlay */
+        #loginSuccessToast {
+            position: fixed;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            background-color: #047857;
+            border: 1px solid #059669;
+            color: white;
+            border-radius: 8px;
+            padding: 12px 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            transition: all 0.4s ease;
+        }
+        .d-none-toast {
+            opacity: 0;
+            visibility: hidden;
+            top: 70px !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="premium-loader">
+        <div class="loader-ring mb-3"></div>
+        <h4 class="fw-bold text-info tracking-wide" id="load-title">সমৃদ্ধ পোর্টালে আপনাকে স্বাগতম...</h4>
+        <p class="text-muted small">Loading Secure Database Matrix</p>
+    </div>
+
+    <div id="loginSuccessToast" class="d-none-toast">
+        <i class="fa-solid fa-circle-check text-white fs-5"></i>
+        <span id="toastMessage">👋 স্বাগতম অ্যাডমিন! আপনার লগইন সফল হয়েছে এবং আপনি বর্তমানে হোমপেজে আছেন।</span>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-info fs-3" href="#">SOMRIDO</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto text-center align-items-center">
+                    <li class="nav-item"><a class="nav-link px-3" href="#home" id="nav-home">হোম</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#about" id="nav-about">আমাদের সম্পর্কে</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#work" id="nav-work">আমাদের কার্যক্রম</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#gallery" id="nav-gallery">গ্যালারি</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#contact" id="nav-contact">যোগাযোগ</a></li>
+                    
+                    <li class="nav-item px-2 mt-2 mt-lg-0">
+                        <div class="btn-group lang-btn-group" role="group">
+                            <button type="button" id="btn-bn" class="btn btn-outline-secondary active btn-sm" onclick="changeLanguage('bn')">BN</button>
+                            <button type="button" id="btn-en" class="btn btn-outline-secondary btn-sm" onclick="changeLanguage('en')">EN</button>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <button class="btn btn-premium-login btn-sm px-4 ms-lg-2 mt-2 mt-lg-0" data-bs-toggle="modal" data-bs-target="#loginModal" id="nav-login">
+                            <i class="fa-solid fa-right-to-bracket me-2"></i>লগইন পোর্টাল
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="hero-section text-center">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-8">
+                    <h1 class="display-4 fw-bold text-white mb-3" id="hero-title">একত্রে আমরা গড়ি এক <span class="text-info">সমৃদ্ধ</span> ভবিষ্যৎ</h1>
+                    <p class="lead text-secondary mb-4" id="hero-desc">আমাদের সঞ্চয়, আমাদের শক্তি। একটি স্বচ্ছ এবং রিয়েল-টাইম ক্লাউড লেজার ভিত্তিক প্রিমিয়াম মেম্বারশিপ অ্যাকাউন্টস প্ল্যাটফর্ম।</p>
+                    <a href="#about" class="btn btn-info text-white btn-lg px-5 fw-bold shadow-lg" id="hero-btn">বিস্তারিত জানুন <i class="fa-solid fa-arrow-down-long ms-2"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="container py-5 my-4">
+        <h2 class="section-title" id="about-title">আমাদের সম্পর্কে</h2>
+        <div class="row g-4 align-items-center">
+            <div class="col-12 col-md-6">
+                <div class="p-3">
+                    <h3 class="fw-bold text-info mb-3" id="about-subtitle">স্বচ্ছতা ও একতা আমাদের মূল ভিত্তি</h3>
+                    <p class="text-secondary" style="line-height: 1.8;" id="about-desc">"সমৃদ্ধ" একটি আধুনিক এবং সম্পূর্ণ ডিজিটাল সমবায় ও সঞ্চয় প্ল্যাটফর্ম। আমাদের মূল লক্ষ্য হলো সদস্যদের ক্ষুদ্র ক্ষুদ্র সঞ্চয়কে একত্রিত করে একটি টেকসই এবং শক্তিশালী অর্থনৈতিক ফান্ড গঠন করা। সম্পূর্ণ ক্লাউড প্রযুক্তির মাধ্যমে এখানে প্রতিটি জমার হিসাব রিয়েল-টাইম ট্র্যাক করা হয়, যা শতভাগ নিরাপত্তা ও স্বচ্ছতা নিশ্চিত করে।</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="row g-3">
+                    <div class="col-6"><div class="premium-card text-center"><i class="fa-solid fa-shield-heart fa-2x text-warning mb-2"></i><h5 id="card-safe">শতভাগ নিরাপদ</h5></div></div>
+                    <div class="col-6"><div class="premium-card text-center"><i class="fa-solid fa-chart-line fa-2x text-success mb-2"></i><h5 id="card-live">লাইভ ট্র্যাকিং</h5></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="work" class="container py-5 my-4">
+        <h2 class="section-title" id="work-title">আমাদের কার্যক্রমসমূহ</h2>
+        <div id="dynamic-works-row" class="row g-4">
+            <div class="col-12 col-md-4">
+                <div class="premium-card">
+                    <h5 class="fw-bold text-info" id="w-t1">ইনস্টলমেন্ট ও সঞ্চয় সংগ্রহ</h5>
+                    <p class="text-muted small" id="w-d1">সদস্যদের নিয়মিত কিস্তি ও সঞ্চয় অটোমেটেড হিসাবের মাধ্যমে ক্লাউড লেজারে জমা করা হয়।</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="premium-card">
+                    <h5 class="fw-bold text-info" id="w-t2">কল্যাণ তহবিল গঠন</h5>
+                    <p class="text-muted small" id="w-d2">জরুরি প্রয়োজনে সদস্যদের পাশে দাঁড়াতে একটি বিশেষ ডোনেশন ও কল্যাণ ফান্ড পরিচালনা।</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="premium-card">
+                    <h5 class="fw-bold text-info" id="w-t3">সামাজিক সহয়তা প্রদান</h5>
+                    <p class="text-muted small" id="w-d3">社会的 পিছিয়ে পড়া মানুষের উন্নয়ন ও আর্থসামাজিক প্রজেক্টে অর্থায়ন করা।</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery" class="container py-5 my-4">
+        <h2 class="section-title" id="gallery-title">ফটোগ্রাফি ও ইভেন্ট গ্যালারি</h2>
+        <div id="dynamic-gallery-row" class="row g-3">
+            <div class="col-12 col-sm-6 col-md-4">
+                <img src="image/image01.png" onerror="this.onerror=null; this.src='../image/image01.png';" class="gallery-img" alt="Somrido Photo 01">
+            </div>
+            <div class="col-12 col-sm-6 col-md-4">
+                <img src="image/image02.png" onerror="this.onerror=null; this.src='../image/image02.png';" class="gallery-img" alt="Somrido Photo 02">
+            </div>
+            <div class="col-12 col-sm-6 col-md-4">
+                <img src="image/image03.png" onerror="this.onerror=null; this.src='../image/image03.png';" class="gallery-img" alt="Somrido Photo 03">
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="container py-5 my-4">
+        <h2 class="section-title" id="contact-title">আমাদের সাথে যোগাযোগ</h2>
+        <div class="row g-4 justify-content-center">
+            <div class="col-12 col-lg-8">
+                <div class="premium-card">
+                    <div class="row g-4">
+                        <div class="col-12 col-md-6">
+                            <h5 class="fw-bold text-info mb-3" id="c-hq"><i class="fa-solid fa-building-user me-2"></i>প্রধান কার্যালয়</h5>
+                            <p class="text-secondary small" id="c-addr">সুলতানহাটা, ধুনট, বগুড়া (Shultanhata, Dhunat, Bogura)</p>
+                            <h5 class="fw-bold text-info mb-2 mt-4" id="c-mail-title"><i class="fa-solid fa-envelope me-2"></i>ইমেইল ঠিকানা</h5>
+                            <p class="text-secondary small">somridobd@gmail.com</p>
+                        </div>
+                        <div class="col-12 col-md-6 text-md-end">
+                            <h5 class="fw-bold text-info mb-3" id="c-hot"><i class="fa-solid fa-phone-volume me-2"></i>হটলাইন নম্বর</h5>
+                            <h4 class="fw-bold text-warning mb-3">01716-247713</h4>
+                            <a href="https://wa.me/8801716247713" target="_blank" class="btn btn-success fw-bold px-4 w-100 py-2" id="c-wa"><i class="fa-brands fa-whatsapp fa-lg me-2"></i> সরাসরি হোয়াটসঅ্যাপ করুন</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 420px; margin: auto;">
+            <div class="modal-content p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="fw-bold text-info mb-0" id="m-title"><i class="fa-solid fa-shield-halved me-2"></i>নিরাপদ লগইন</h4>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <hr style="border-color: #334155;">
+                <form id="portalLoginForm">
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small" id="m-user-lbl">ইউজার আইডি / অ্যাডমিন নাম</label>
+                        <input type="text" id="loginUsername" class="form-control" placeholder="उदा: S-01 অথবা admin" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label text-secondary small" id="m-pass-lbl">গোপন পাসওয়ার্ড</label>
+                        <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+                    </div>
+                    <div id="loginError" class="text-danger small mb-3 d-none"></div>
+                    <button type="submit" class="btn btn-info text-white w-100 fw-bold py-2 shadow" id="m-submit-btn">পোর্টালে প্রবেশ করুন</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer text-center">
+        <div class="container">
+            <p class="mb-1 text-secondary small">&copy; 2026 Somrido Portal. All Rights Reserved.</p>
+            <p class="mb-0 text-muted small" style="letter-spacing: 1px;">Powered by <span class="text-info fw-bold">Somrio</span></p>
+        </div>
+    </footer>
+
+    <script>
+        // ডাইনামিক ডিকশনারি ডাটাবেজ
+        const languages = {
+            bn: {
+                "load-title": "সমৃদ্ধ পোর্টালে আপনাকে স্বাগতম...",
+                "nav-home": "হোম",
+                "nav-about": "আমাদের সম্পর্কে",
+                "nav-work": "আমাদের কার্যক্রম",
+                "nav-gallery": "গ্যালারি",
+                "nav-contact": "যোগাযোগ",
+                "nav-login": "<i class='fa-solid fa-right-to-bracket me-2'></i>লগইন পোর্টাল",
+                "hero-title": "একত্রে আমরা গড়ি এক <span class='text-info'>সমৃদ্ধ</span> ভবিষ্যৎ",
+                "hero-desc": "আমাদের সঞ্চয়, আমাদের শক্তি। একটি স্বচ্ছ এবং রিয়েল-টাইম ক্লাউড লেজার ভিত্তিক প্রিমিয়াম মেম্বারশিপ অ্যাকাউন্টস প্ল্যাটফর্ম।",
+                "hero-btn": "বিস্তারিত জানুন <i class='fa-solid fa-arrow-down-long ms-2'></i>",
+                "about-title": "আমাদের সম্পর্কে",
+                "about-subtitle": "স্বচ্ছতা ও একতা আমাদের মূল ভিত্তি",
+                "about-desc": "\"সমৃদ্ধ\" একটি আধুনিক এবং সম্পূর্ণ ডিজিটাল সমবায় ও সঞ্চয় প্ল্যাটফর্ম। আমাদের মূল লক্ষ্য হলো সদস্যদের ক্ষুদ্র ক্ষুদ্র সঞ্চয়কে একত্রিত করে একটি টেকসই এবং শক্তিশালী অর্থনৈতিক ফান্ড গঠন করা। সম্পূর্ণ ক্লাউড প্রযুক্তির মাধ্যমে এখানে প্রতিটি জমার হিসাব রিয়েল-টাইম ট্র্যাক করা হয়, যা শতভাগ নিরাপত্তা ও স্বচ্ছতা নিশ্চিত করে।",
+                "card-safe": "শতভাগ নিরাপদ",
+                "card-live": "লাইভ ট্র্যাকিং",
+                "work-title": "আমাদের কার্যক্রমসমূহ",
+                "w-t1": "ইনস্টলমেন্ট ও সঞ্চয় সংগ্রহ",
+                "w-d1": "সদস্যদের নিয়মিত কিস্তি ও সঞ্চয় অটোমেটেড হিসাবের মাধ্যমে ক্লাউড লেজারে জমা করা হয়।",
+                "w-t2": "কল্যাণ তহবিল গঠন",
+                "w-d2": "জরুরি প্রয়োজনে সদস্যদের পাশে দাঁড়াতে একটি বিশেষ ডোনেশন ও কল্যাণ ফান্ড পরিচালনা।",
+                "w-t3": "সামাজিক সহয়তা প্রদান",
+                "w-d3": "社会的 পিছিয়ে পড়া মানুষের উন্নয়ন ও আর্থসামাজিক প্রজেক্টে অর্থায়ন করা।",
+                "gallery-title": "ফটোগ্রাফি ও ইভেন্ট গ্যালারি",
+                "contact-title": "আমাদের সাথে যোগাযোগ",
+                "c-hq": "প্রধান কার্যালয়",
+                "c-addr": "সুলতানহাটা, ধুনট, বগুড়া (Shultanhata, Dhunat, Bogura)",
+                "c-mail-title": "ইমেইল ঠিকানা",
+                "c-hot": "হটলাইন নম্বর",
+                "c-wa": "<i class='fa-brands fa-whatsapp fa-lg me-2'></i> সরাসরি হোয়াটসঅ্যাপ করুন",
+                "m-title": "<i class='fa-solid fa-shield-halved me-2'></i>নিরাপদ লগইন",
+                "m-user-lbl": "ইউজার আইডি / অ্যাডমিন নাম",
+                "m-pass-lbl": "গোপন পাসওয়ার্ড",
+                "m-submit-btn": "পোর্টালে প্রবেশ করুন"
+            },
+            en: {
+                "load-title": "Welcome to Somrido Portal...",
+                "nav-home": "Home",
+                "nav-about": "About Us",
+                "nav-work": "Our Activities",
+                "nav-gallery": "Gallery",
+                "nav-contact": "Contact",
+                "nav-login": "<i class='fa-solid fa-right-to-bracket me-2'></i>Login Portal",
+                "hero-title": "Together We Build a <span class='text-info'>Prosperous</span> Future",
+                "hero-desc": "Our savings, our strength. A transparent and real-time cloud ledger-based premium membership accounts platform.",
+                "hero-btn": "Learn More <i class='fa-solid fa-arrow-down-long ms-2'></i>",
+                "about-title": "About Us",
+                "about-subtitle": "Transparency & Unity are Our Core",
+                "about-desc": "\"Somrido\" is a modern and fully digital co-operative & savings platform. Our main goal is to aggregate members' micro-savings into a sustainable and robust economic fund. Through advanced cloud technology, every deposit is tracked in real-time, ensuring 100% security and ultimate transparency.",
+                "card-safe": "100% Secure",
+                "card-live": "Live Tracking",
+                "work-title": "Our Activities",
+                "w-t1": "Installment & Savings Collection",
+                "w-d1": "Members' regular installments and savings are automatically logged onto the secure cloud ledger system.",
+                "w-t2": "Welfare Fund Management",
+                "w-d2": "Running a dedicated donation and welfare fund to support members during emergencies.",
+                "w-t3": "Social Support Programs",
+                "w-d3": "Financing socio-economic projects and supporting underdeveloped communities.",
+                "gallery-title": "Photography & Event Gallery",
+                "contact-title": "Contact With Us",
+                "c-hq": "Head Office",
+                "c-addr": "Shultanhata, Dhunat, Bogura",
+                "c-mail-title": "Email Address",
+                "c-hot": "Hotline Number",
+                "c-wa": "<i class='fa-brands fa-whatsapp fa-lg me-2'></i> WhatsApp Directly",
+                "m-title": "<i class='fa-solid fa-shield-halved me-2'></i>Secure Login",
+                "m-user-lbl": "User ID / Admin Name",
+                "m-pass-lbl": "Secret Password",
+                "m-submit-btn": "Enter Portal"
+            }
+        };
+
+        // ল্যাঙ্গুয়েজ সুইচিং মেকানিজম
+        function changeLanguage(lang) {
+            document.getElementById('btn-bn').classList.remove('active');
+            document.getElementById('btn-en').classList.remove('active');
+            
+            if(lang === 'bn') {
+                document.getElementById('btn-bn').classList.add('active');
+            } else {
+                document.getElementById('btn-en').classList.add('active');
+            }
+
+            for (let key in languages[lang]) {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.innerHTML = languages[lang][key];
+                }
+            }
+        }
+
+        // 🔐 ফিক্সড ফোল্ডার পাথ গেটওয়ে লজিক (S-01 থেকে S-25 এবং Admin)
+        document.getElementById('portalLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userInput = document.getElementById('loginUsername').value.trim();
+            const passInput = document.getElementById('loginPassword').value.trim();
+            const errorDiv = document.getElementById('loginError');
+            const toast = document.getElementById('loginSuccessToast');
+            
+            errorDiv.classList.add('d-none');
+
+            // ১. 🛠️ আপডেট হওয়া অ্যাডমিন লগইন গেটওয়ে (সাকসেস টোস্ট এবং অটো-রিডাইরেক্ট সহ)
+            if (userInput === 'admin' && passInput === 'admin123') {
+                // মডালটি হাইড বা বন্ধ করে দেওয়া
+                const loginModalEl = document.getElementById('loginModal');
+                const modalInstance = bootstrap.Modal.getInstance(loginModalEl);
+                if(modalInstance) modalInstance.hide();
+                
+                // প্রিমিয়াম সাকসেস নোটিফিকেশন বারটি স্ক্রিনে ভিজিবল করা
+                document.getElementById('toastMessage').innerHTML = "👋 স্বাগতম অ্যাডমিন! আপনার লগইন সফল হয়েছে। সেন্ট্রাল প্যানেলে নিয়ে যাওয়া হচ্ছে...";
+                toast.classList.remove('d-none-toast');
+                
+                // ১.৫ সেকেন্ড ডিলে দিয়ে admin.html ফাইলে অটোমেটিক ফরওয়ার্ড করা
+                setTimeout(() => {
+                    toast.classList.add('d-none-toast');
+                    window.location.href = 'admin.html';
+                }, 1500);
+                return;
+            }
+
+            // ২. মেম্বার/ইউজার ভ্যালিডেশন চেকার (S-01 থেকে S-25)
+            const userRegex = /^S-(0[1-9]|1[0-9]|2[0-5])$/; 
+            
+            if (userRegex.test(userInput)) {
+                if (passInput === '123456') { 
+                    // ব্রাউজার মেমরিতে কারেন্ট আইডিটি পুশ করা যাতে ড্যাশবোর্ড রিড করতে পারে
+                    localStorage.setItem('somrido_logged_user', userInput);
+
+                    const loginModalEl = document.getElementById('loginModal');
+                    const modalInstance = bootstrap.Modal.getInstance(loginModalEl);
+                    if(modalInstance) modalInstance.hide();
+
+                    document.getElementById('toastMessage').innerHTML = `👋 সফল লগইন! সদস্য ${userInput}, আপনার ড্যাশবোর্ড লোড হচ্ছে...`;
+                    toast.classList.remove('d-none-toast');
+
+                    setTimeout(() => {
+                        toast.classList.add('d-none-toast');
+                        window.location.href = 'members.html';
+                    }, 1500);
+                } else {
+                    errorDiv.innerHTML = "❌ ভুল পাসওয়ার্ড! দয়া করে সঠিক পাসওয়ার্ড দিন।";
+                    errorDiv.classList.remove('d-none');
+                }
+            } else {
+                errorDiv.innerHTML = "❌ ভুল ইউজার আইডি অথবা অ্যাডমিন নাম!";
+                errorDiv.classList.remove('d-none');
+            }
+        });
+
+        // লোডার হ্যান্ডলার
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('premium-loader');
+                if(loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.style.display = 'none', 600);
+                }
+            }, 1200);
+        });
+    </script>
+
+    <!-- 📲 PWA Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((reg) => console.log('Service Worker Registered!', reg))
+            .catch((err) => console.log('Service Worker Registration Failed!', err));
+        });
+      }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA47in40_VutzVKQUAV1CUSl6a0SbxDVy0",
+            authDomain: "somrido.firebaseapp.com",
+            projectId: "somrido",
+            storageBucket: "somrido.firebasestorage.app",
+            messagingSenderId: "377166664245",
+            appId: "1:377166664245:web:f08539e2af77d89275577c"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // লাইভ ডেটাবেজ কার্যক্রম সিনক্রোনাইজেশন
+        onSnapshot(collection(db, "somrido_works"), (snapshot) => {
+            const row = document.getElementById('dynamic-works-row');
+            if(snapshot.size > 0 && row) {
+                row.innerHTML = "";
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    row.innerHTML += `
+                        <div class="col-12 col-md-4">
+                            <div class="premium-card">
+                                <h5 class="fw-bold text-info">${data.title}</h5>
+                                <p class="text-secondary small">${data.description}</p>
+                            </div>
+                        </div>`;
+                });
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
